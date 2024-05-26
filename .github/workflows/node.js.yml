@@ -13,24 +13,22 @@ jobs:
 
     strategy:
       matrix:
-        node-version: [16.x, 18.x]
-        # See supported Node.js release schedule at https://nodejs.org/en/about/releases/
+        node-version: [18.x]
 
     steps:
-    - uses: actions/checkout@v4
-    - name: Use Node.js ${{ matrix.node-version }}
-      uses: actions/setup-node@v3
-      with:
-        node-version: ${{ matrix.node-version }}
-        cache: 'pnpm'  # Sử dụng pnpm để caching
+      - uses: actions/checkout@v4
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v3
+        with:
+          version: 8
+      - name: Use Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v3
+        with:
+          node-version: ${{ matrix.node-version }}
+          cache: 'pnpm'
 
-    - name: Setup pnpm
-      uses: pnpm/action-setup@v3
-      with:
-        version: 8 # Hoặc phiên bản pnpm bạn muốn sử dụng
+      - name: Install dependencies
+        run: pnpm install
 
-    - name: Install dependencies
-      run: pnpm install
-
-    - run: pnpm run build --if-present
-    - run: pnpm test
+      - run: pnpm run build --if-present
+      - run: pnpm test
